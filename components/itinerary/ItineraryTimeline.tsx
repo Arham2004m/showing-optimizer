@@ -41,9 +41,9 @@ export default function ItineraryTimeline({ stops }: { stops: any[] }) {
                       <span className="material-symbols-outlined text-[16px]">visibility</span> View Listing
                     </Link>
                   ) : (
-                    <Link href="#" className="text-brand-primary hover:text-blue-800 text-[14px] font-semibold leading-[1] flex items-center gap-1">
+                    <span className="text-brand-text-secondary opacity-50 cursor-not-allowed text-[14px] font-semibold leading-[1] flex items-center gap-1">
                       <span className="material-symbols-outlined text-[16px]">visibility</span> View Listing
-                    </Link>
+                    </span>
                   )}
                   <Link href={`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(stop.address)}`} target="_blank" className="text-brand-primary hover:text-blue-800 text-[14px] font-semibold leading-[1] flex items-center gap-1">
                     <span className="material-symbols-outlined text-[16px]">directions</span> Get Directions

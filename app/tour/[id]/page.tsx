@@ -1,6 +1,7 @@
 import { createServerSupabaseClient } from '@/lib/supabase';
 import ItineraryTimeline from '@/components/itinerary/ItineraryTimeline';
 import ItineraryMapWrapper from '@/components/itinerary/ItineraryMapWrapper';
+import ShareButton from '@/components/itinerary/ShareButton';
 import Link from 'next/link';
 
 export default async function TourItineraryPage({ params }: { params: Promise<{ id: string }> }) {
@@ -89,10 +90,7 @@ export default async function TourItineraryPage({ params }: { params: Promise<{ 
           <div className="text-[14px] font-bold leading-[1] text-brand-text mb-2">
             Property tour powered by Showing Optimizer.
           </div>
-          <button className="bg-brand-primary text-white text-[14px] font-semibold leading-[1] h-12 px-6 rounded-lg flex items-center justify-center gap-2 hover:bg-blue-600 hover:shadow-md transition-all mb-4">
-            <span className="material-symbols-outlined">share</span>
-            Share Itinerary
-          </button>
+          <ShareButton title={headerTitle} />
           <div className="flex gap-4 justify-center flex-wrap">
             <Link href="#" className="text-brand-text-secondary hover:text-brand-accent transition-colors text-[14px] leading-[1.5]">
               View Full Map

@@ -27,13 +27,16 @@ export async function saveTourAction(formData: any, itinerary: any[], waypoints:
     const tourId = tourData.id;
 
     // 2. Insert Tour Stops
-    const stopsToInsert = itinerary.map((stop: any, index: number) => {
-      // Find waypoint coordinate for this stop (waypoints includes start address at index 0)
-      const coord = waypoints[index];
+    const propertiesOnly = itinerary.filter((stop: any) => !stop.isStart);
+    const stopsToInsert = propertiesOnly.map((stop: any, index: number) => {
+      // Find waypoint coordinate for this stop
+      // waypoints includes start address at index 0, so properties start at index + 1
+      const coord = waypoints[index + 1];
       
       // We need scheduled_time as timestamp. Combine date and arrival time.
       let scheduledTime = null;
-      if (formData.date && stop.arrivalTime) {
+      const tourDate = formData.date || new Date().toISOString().split('T')[0];
+      if (tourDate && stop.arrivalTime) {
         // Simple parsing of "09:00 AM" format
         const timeParts = stop.arrivalTime.match(/(\d+):(\d+) (AM|PM)/i);
         if (timeParts) {
@@ -43,13 +46,15 @@ export async function saveTourAction(formData: any, itinerary: any[], waypoints:
           if (ampm === 'PM' && hours < 12) hours += 12;
           if (ampm === 'AM' && hours === 12) hours = 0;
           
-          const dateObj = new Date(formData.date);
+          const [year, month, day] = tourDate.split('-');
+          const dateObj = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
           dateObj.setHours(hours, minutes, 0, 0);
           scheduledTime = dateObj.toISOString();
         } else {
           // If format is like "09:00"
           const [h, m] = stop.arrivalTime.split(':');
-          const dateObj = new Date(formData.date);
+          const [year, month, day] = tourDate.split('-');
+          const dateObj = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
           dateObj.setHours(parseInt(h), parseInt(m), 0, 0);
           scheduledTime = dateObj.toISOString();
         }
@@ -78,12 +83,13 @@ export async function saveTourAction(formData: any, itinerary: any[], waypoints:
       let startDay = new Date().getDate();
       let startHour = 9;
       let startMinute = 0;
+      const tourDateICS = formData.date || new Date().toISOString().split('T')[0];
 
-      if (formData.date && stop.arrivalTime) {
-        const dateObj = new Date(formData.date);
-        startYear = dateObj.getFullYear();
-        startMonth = dateObj.getMonth() + 1;
-        startDay = dateObj.getDate();
+      if (tourDateICS && stop.arrivalTime) {
+        const [yearStr, monthStr, dayStr] = tourDateICS.split('-');
+        startYear = parseInt(yearStr);
+        startMonth = parseInt(monthStr);
+        startDay = parseInt(dayStr);
 
         const timeParts = stop.arrivalTime.match(/(\d+):(\d+)\s?(AM|PM)?/i);
         if (timeParts) {

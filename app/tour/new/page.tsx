@@ -93,6 +93,9 @@ export default function TourBuilderPage() {
         document.body.removeChild(link);
       }
 
+      // Small delay to ensure the download starts before navigation
+      await new Promise(resolve => setTimeout(resolve, 500));
+
       // Redirect to itinerary page
       router.push(`/tour/${res.tourId}`);
     } catch (err: any) {
