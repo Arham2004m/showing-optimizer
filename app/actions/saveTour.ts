@@ -7,7 +7,7 @@ const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!; // We use anon key. Make sure RLS allows inserts if testing without auth.
 const supabase = createClient(supabaseUrl, supabaseKey);
 
-export async function saveTourAction(formData: any, itinerary: any[], waypoints: any[]) {
+export async function saveTourAction(formData: any, itinerary: any[], waypoints: any[]): Promise<{ success: boolean; tourId?: string; icsData?: string; error?: string }> {
   try {
     // 1. Insert Tour
     const { data: tourData, error: tourError } = await supabase
@@ -113,7 +113,7 @@ export async function saveTourAction(formData: any, itinerary: any[], waypoints:
       };
     });
 
-    return new Promise((resolve, reject) => {
+    return new Promise<{ success: boolean; tourId?: string; icsData?: string; error?: string }>((resolve, reject) => {
       ics.createEvents(events, (error, value) => {
         if (error) {
           reject(new Error(`ICS generation error: ${error.message}`));
